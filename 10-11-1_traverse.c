@@ -1,4 +1,3 @@
-/* WIP */
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -47,7 +46,9 @@ static void traverse(char *path) {
     }
   }
 
-  closedir(d);
+  // TODO: 本当はここでクローズしたい
+  // が、何らかの要因で変数 d の示すメモリアドレスにアクセスできずにセグフォになるパターンがある
+  // closedir(d);
 }
 
 static int is_traversable(char *path) {
