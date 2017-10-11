@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   while ((opt = getopt(argc, argv, "iv")) != -1) {
     switch (opt) {
       case 'i':
-        reg_flag = reg_flag | REG_ICASE;
+        reg_flag |= REG_ICASE;
         break;
       case 'v':
         /* TODO */
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   }
 
   regex_t pat;
-  int err = regcomp(&pat, argv[1], reg_flag);
+  int err = regcomp(&pat, argv[0 + optind], reg_flag);
   if (err != 0) {
     char buf[1024];
 
@@ -59,8 +59,9 @@ int main(int argc, char *argv[]) {
       fclose(f);
     }
     regfree(&pat);
-    exit(0);
   }
+
+  exit(0);
 }
 
 static void do_grep(regex_t *pat, FILE *src) {
