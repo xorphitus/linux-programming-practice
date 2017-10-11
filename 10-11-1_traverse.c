@@ -29,13 +29,19 @@ static void traverse(char *path) {
     exit(1);
   }
 
+  char *parent = strcat(path, "/");
   struct dirent *ent;
   while ((ent = readdir(d))) {
     char *name = ent->d_name;
-    printf("%s", name);
 
-    if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0 || is_traversable(name)) {
-      traverse(name);
+    char next[strlen(parent)];
+    strcpy(next, parent);
+    strcat(next, name);
+
+    printf("%s\n", next);
+
+    if (strcmp(name, ".") == 0 && strcmp(name, "..") == 0 && is_traversable(next)) {
+      traverse(next);
     }
   }
 
@@ -51,3 +57,4 @@ static int is_traversable(char *path) {
 
   return !S_ISLNK(st.st_mode) && S_ISDIR(st.st_mode);
 }
+
