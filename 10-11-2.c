@@ -5,12 +5,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+static void touch(char *path);
 static void experiment1(char *path);
 static void experiment2(char *path);
 static void experiment3(char *path, char *path2);
 
 int main(int argc, char *argv[]) {
-  if (argc != 4) {
+  if (argc != 5) {
     fprintf(stderr, "%s: invalid arguments\n", argv[0]);
     exit(1);
   }
@@ -22,29 +23,47 @@ int main(int argc, char *argv[]) {
   exit(0);
 }
 
+static void touch(char *path) {
+  FILE *fp = fopen(path, "w");
+  fclose(fp);
+}
+
 static void experiment1(char *path) {
+  touch(path);
+
   int fd = open(path, O_RDONLY);
   if (rename(path, "hoge") < 0) {
     perror(path);
-    exit(1);
+    printf("ex1: failed to rename\n");
+  } else {
+    close(fd);
+    printf("ex1: succeed\n");
   }
-  close(fd);
 }
 
 static void experiment2(char *path) {
+  touch(path);
+
   int fd = open(path, O_RDONLY);
   if (unlink(path) < 0) {
     perror(path);
-    exit(1);
+    printf("ex2: failed to unlink\n");
+  } else {
+    close(fd);
+    printf("ex2: succeed\n");
   }
-  close(fd);
 }
 
 static void experiment3(char *path, char *path2) {
+  touch(path);
+  touch(path2);
+
   int fd = open(path, O_RDONLY);
   if (rename(path2, "fuga") < 0) {
     perror(path);
-    exit(1);
+    printf("ex3: failed to rename\n");
+  } else {
+    close(fd);
+    printf("ex3: succeed\n");
   }
-  close(fd);
 }
