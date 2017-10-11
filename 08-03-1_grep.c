@@ -9,7 +9,7 @@
 #define _GNU_SOURCE
 #include <getopt.h>
 
-static void do_grep(regex_t *pat, FILE *f);
+static void do_grep(regex_t *pat, FILE *f, int invert);
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   }
 
   int reg_flag = REG_EXTENDED | REG_NOSUB | REG_NEWLINE;
+  int invert = 0;
 
   int opt;
   while ((opt = getopt(argc, argv, "iv")) != -1) {
@@ -26,7 +27,7 @@ int main(int argc, char *argv[]) {
         reg_flag |= REG_ICASE;
         break;
       case 'v':
-        /* TODO */
+        invert = 1;
         break;
       case '?':
         fprintf(stdout, "Unknown option");
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (argc == 1 + optind) {
-    do_grep(&pat, stdin);
+    do_grep(&pat, stdin, invert);
   } else {
     for (int i = 1 + optind; i < argc; i++) {
       FILE *f;
@@ -55,7 +56,7 @@ int main(int argc, char *argv[]) {
         perror(argv[i]);
         exit(1);
       }
-      do_grep(&pat, f);
+      do_grep(&pat, f, invert);
       fclose(f);
     }
     regfree(&pat);
@@ -64,11 +65,14 @@ int main(int argc, char *argv[]) {
   exit(0);
 }
 
-static void do_grep(regex_t *pat, FILE *src) {
+static void do_grep(regex_t *pat, FILE *src, int invert) {
   char buf[4096];
 
   while (fgets(buf, sizeof buf, src)) {
-    if (regexec(pat, buf, 0, NULL, 0) == 0) {
+    int match = regexec(pat, buf, 0, NULL, 0);
+    if (match == 0 && !invert) {
+      fputs(buf, stdout);
+    } else if (match != 0 && invert) {
       fputs(buf, stdout);
     }
   }
