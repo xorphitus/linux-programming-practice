@@ -11,7 +11,7 @@ static void experiment3(char *path, char *path2);
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    fprintf(stderr, "%s: invalid arguments", argv[0]);
+    fprintf(stderr, "%s: invalid arguments\n", argv[0]);
     exit(1);
   }
 

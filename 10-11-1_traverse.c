@@ -11,7 +11,7 @@ static int is_traversable(char *path);
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
-    fprintf(stderr, "%s: invalid arguments", argv[0]);
+    fprintf(stderr, "%s: invalid arguments\n", argv[0]);
     exit(1);
   }
 
