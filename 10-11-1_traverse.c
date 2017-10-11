@@ -1,3 +1,4 @@
+/* WIP */
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -30,6 +31,7 @@ static void traverse(char *path) {
   }
 
   char *parent = strcat(path, "/");
+
   struct dirent *ent;
   while ((ent = readdir(d))) {
     char *name = ent->d_name;
@@ -40,7 +42,7 @@ static void traverse(char *path) {
 
     printf("%s\n", next);
 
-    if (strcmp(name, ".") == 0 && strcmp(name, "..") == 0 && is_traversable(next)) {
+    if (strcmp(name, ".") != 0 && strcmp(name, "..") != 0 && is_traversable(next)) {
       traverse(next);
     }
   }
@@ -57,4 +59,3 @@ static int is_traversable(char *path) {
 
   return !S_ISLNK(st.st_mode) && S_ISDIR(st.st_mode);
 }
-
