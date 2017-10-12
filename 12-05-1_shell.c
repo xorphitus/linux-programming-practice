@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
 
   if (pid == 0) {
     // TODO: 引数を渡せるようにする
-    // TODO: コマンドをフルパス指定じゃなくてOKにする
-    execl(input, input, NULL);
+    execlp(input, input, NULL);
     perror(input);
     exit(99);
   } else {
