@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid == 0) {
-      printf("%s --- \n", command[0]);
       // TODO: オプションと引数を同時に渡すとエラーになる件
       execvp(command[0], command);
       perror(input);
