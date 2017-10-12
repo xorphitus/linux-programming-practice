@@ -9,17 +9,17 @@
 #define MAX_ARGS 100
 
 static void split(char *str, char *results[]);
-static char* trim(char *str);
+static void ltrim(char *str);
+static void rtrim(char *str);
 
 int main(int argc, char *argv[]) {
   while (1) {
     printf("myshell$ ");
     char input[100];
-    // TODO: fgetsに変更
-    gets(input);
-
+    fgets(input, sizeof(input), stdin);
     char *command[MAX_ARGS] = {};
     split(input, command);
+    rtrim(*command);
 
     if (strcmp(command[0], "exit") == 0) {
       exit(0);
@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid == 0) {
+      printf("%s --- \n", command[0]);
       // TODO: オプションと引数を同時に渡すとエラーになる件
       execvp(command[0], command);
       perror(input);
@@ -49,7 +50,7 @@ static void split(char *str, char *results[]) {
   char *token;
   int i = 1;
   while((token = strtok(NULL, "")) && i < MAX_ARGS) {
-    token = trim(token);
+    ltrim(token);
     if (token[0] == '\0') {
       continue;
     }
@@ -58,7 +59,7 @@ static void split(char *str, char *results[]) {
   }
 }
 
-static char* trim(char *str) {
+static void ltrim(char *str) {
   if (str && *str) {
     size_t len = strlen(str);
     for (size_t i = 0; i < len; i++) {
@@ -67,6 +68,15 @@ static char* trim(char *str) {
       }
     }
   }
+}
 
-  return str;
+static void rtrim(char *str) {
+  if (str && *str) {
+    size_t len = strlen(str);
+    for (size_t i = len - 1; i > 0 ; i--) {
+      if (isspace(str[i])) {
+        str[i] = '\0';
+      }
+    }
+  }
 }
